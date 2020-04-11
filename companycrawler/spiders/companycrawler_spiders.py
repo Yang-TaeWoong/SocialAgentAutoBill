@@ -6,6 +6,7 @@ import re
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
+    cleantext = re.sub(r'\s',"",cleantext)
     return cleantext
 
 class companycrawler_spiders(scrapy.Spider):
@@ -16,7 +17,7 @@ class companycrawler_spiders(scrapy.Spider):
 
     def start_requests(self):
         arr = ("0318", "0224", "0225", "0122", "0601", "0121")
-        for tail4 in range(1, 9999):
+        for tail4 in range(9440, 9445):
             for middle4 in arr:
                 yield scrapy.Request("https://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm?ems_gubun=E&sid1={0}&POST_CODE=&mgbn=trace&traceselect=1&target_command=&JspURI=&postNum={0}".format("14917"+middle4 + str(tail4).zfill(4)), callback = self.parse)
 
@@ -24,9 +25,9 @@ class companycrawler_spiders(scrapy.Spider):
         item = CompanycrawlerItem()
         sender = response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[1]/text()[1]").get()
         receiver = response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[2]/text()[1]").get()
-        sender_date = response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[1]/text()[2]").get()
-        receiver_date = receiver = response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[2]/text()[2]").get()
         if sender == "청*2동주민센터" or receiver == "청*2동주민센터":
+            sender_date = cleanhtml(response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[1]/text()[2]").get())
+            receiver_date = cleanhtml(response.xpath("//*[@id=\"print\"]/table/tbody/tr/td[2]/text()[2]").get())
             item['postnum'] = cleanhtml(response.xpath("//*[@id=\"print\"]/table/tbody/tr/th").get())
             item['receiver'] = receiver
             item['sender'] = sender

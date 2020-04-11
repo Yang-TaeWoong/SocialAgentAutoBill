@@ -5,7 +5,7 @@ from scrapy.exporters import JsonItemExporter, CsvItemExporter
 from scrapy.exceptions import DropItem
 from scrapy import settings
 
-
+# 여기서 어떤 파일로 내보낼껀지 결정.
 class CsvPipeline(object):
     def __init__(self):
         self.file = open("newsUrlCrawl.csv", 'wb')
