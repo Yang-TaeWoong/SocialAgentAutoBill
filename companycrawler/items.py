@@ -15,3 +15,5 @@ class CompanycrawlerItem(Item):
     sender = Field()
     receiver = Field()
     result = Field()
+    senderdate = Field()
+    receiverdate = Field()
